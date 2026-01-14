@@ -1,31 +1,20 @@
-import { StyleSheet } from 'react-native';
+import { getAuth } from "firebase/auth";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "@/FirebaseConfig";
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+const dateKey = (d = new Date()) => d.toISOString().slice(0, 10);
 
-export default function TabTwoScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/two.tsx" />
-    </View>
-  );
+export async function addMeal({ foodName, calories, mealType }) {
+  const user = getAuth().currentUser;
+  if (!user) throw new Error("Not logged in");
+
+  const uid = user.uid;
+
+  await addDoc(collection(db, "users", uid, "entries"), {
+    foodName: foodName.trim(),
+    calories: Number(calories),
+    mealType,
+    dateKey: dateKey(),
+    createdAt: serverTimestamp(),
+  });
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
