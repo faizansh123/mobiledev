@@ -78,6 +78,10 @@ export default function FoodTrackerScreen() {
       setEditError(e.message || "Failed to update meal");
     }
   };
+  const totalCalories = meals.reduce(
+  (sum, meal) => sum + (meal.calories || 0),
+  0
+);
 
   return (
     <View style={{ padding: 16, gap: 12 }}>
@@ -131,9 +135,27 @@ export default function FoodTrackerScreen() {
         <Text style={{ fontWeight: "700" }}>Save Meal</Text>
       </Pressable>
 
-      <Text style={{ fontSize: 18, fontWeight: "700", marginTop: 10 }}>
-        Today’s Meals
-      </Text>
+      <View style={{ flex: 1, paddingRight: 12 }}>
+              <Text style={{ fontWeight: "700" }}>Total Cals</Text>
+              <Text>
+                {totalCalories} cal
+              </Text>
+            </View>
+
+        <View
+      style={{
+        borderWidth: 1,
+        borderRadius: 12,
+        padding: 16,
+        alignItems: "center",
+      }}
+    >
+    <Text style={{ fontSize: 14 }}>Total Calories Today</Text>
+    <Text style={{ fontSize: 28, fontWeight: "700" }}>
+      {totalCalories} kcal
+    </Text>
+  </View>
+
 
       <FlatList
         data={meals}
